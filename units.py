@@ -60,24 +60,51 @@ def _to_dict_average_over_track(
         results_dict[track_names[i]] = np.average(results[:, i]).item()
     return results_dict
 
+
+def _add_measure_axis(
+    pianoroll: np.ndarray,
+    measures_per_song: int,
+) -> np.ndarray:
+    """add measure axis.
+    shape: (songs, track, timestep, pitch)
+        -> (songs, track, measure, timestep, pitch)
+
+    Args:
+        pianoroll (np.ndarray): original pianoroll.
+            shape: (songs, timestep, pitch)
+        measures_per_song (int): measures per song
+
+    Returns:
+        np.ndarray: reshaped pianoroll.
+            shape: (songs, measure, timestep, pitch)
+    """
+    return np.reshape(
+        pianoroll,
+        (pianoroll.shape[0], pianoroll.shape[1],
+         -1, measures_per_song, pianoroll.shape[3])
+    )
+
+
 class EmptyBars(EvaluateUnit):
     def __init__(
         self,
         n_samples: int,
-        n_pianoroll_per_samples: int,
+        songs_per_sample: int,
+        measures_per_song: int,
         reshaper: Callable[[np.ndarray], np.ndarray],
         track_names: List[str],
     ):
         """Empty bars ratio
         Args:
             n_samples (int): count of total samples
-            n_pianoroll_per_samples (int): pianoroll per samples
+            songs_per_sample (int): songs per sample
             reshaper (Callable[[np.ndarray], np.ndarray]): reshape function.
                 it convert pianoroll shape into (song, track, timestep, pitch)
             track_names (List[str]): list of track name
         """
         self.results = np.zeros((n_samples, len(track_names)))
-        self.n_pianoroll_per_samples = n_pianoroll_per_samples
+        self.songs_per_sample = songs_per_sample
+        self.measures_per_song = measures_per_song
         self.reshaper =reshaper
         self.track_names = track_names
 
@@ -89,11 +116,16 @@ class EmptyBars(EvaluateUnit):
             pianoroll (np.ndarray): pianoroll of n songs.
         """
         pianoroll = self.reshaper(pianoroll)
+        pianoroll = _add_measure_axis(pianoroll, self.measures_per_song)
+        # (songs, track, measure, timestep, pitch)
 
-        result = np.all(pianoroll == 0, axis=(2, 3)).astype(np.float32)
+        result = np.average(
+            np.all(pianoroll == 0, axis=(3, 4)).astype(np.float32),
+            axis=2,
+        )
         self.results[
-            idx * self.n_pianoroll_per_samples:
-                (idx + 1) * self.n_pianoroll_per_samples] = result
+            idx * self.songs_per_sample:
+                (idx + 1) * self.songs_per_sample] = result
 
     def to_dict(self):
         results = _to_dict_average_over_track(self.track_names, self.results)
