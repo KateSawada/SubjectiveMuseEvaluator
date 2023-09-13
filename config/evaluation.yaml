@@ -15,6 +15,6 @@ track_names:
 drum_track_index: -1  # negative value means samples do not contain drum track
 
 defaults:
-    evaluation_loader: ndarray_from_pt
-    reshaper: reshaper
-    drum_reshaper: drum_reshaper
+    - evaluation_loader: ndarray_from_pt
+    - reshaper: reshaper
+    - drum_reshaper: drum_reshaper
