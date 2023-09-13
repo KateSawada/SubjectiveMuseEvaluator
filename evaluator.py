@@ -1,6 +1,8 @@
 from typing import List
 
 import numpy as np
+from omegaconf import OmegaConf
+from tqdm import tqdm
 
 from .units import EvaluateUnit
 
@@ -20,4 +22,21 @@ class Evaluator:
         Args:
             output_file (str): output file name
         """
-        # TODO: implement
+        progress_bar = tqdm(range(len(self.samples)))
+        progress_bar.set_description("samples")
+
+        for idx_samples in progress_bar:
+            # define function ran by map
+            def _run_method(method):
+                method(idx_samples, self.samples[idx_samples])
+            # execute method
+            for idx_methods in range(len(self.methods)):
+                tuple(map(_run_method, self.methods))
+
+        # merge all results
+        results = {}
+        for idx_methods in range(len(self.methods)):
+            results = dict(results, **self.methods[idx_methods].to_dict())
+        results = OmegaConf.create(results)
+        print(results)
+        OmegaConf.save(results, output_file)
