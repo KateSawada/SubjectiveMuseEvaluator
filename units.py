@@ -2,7 +2,7 @@
 """
 from abc import (
     abstractmethod,
-    ABCMeta,
+    ABC,
 )
 from typing import (
     Union,
@@ -13,7 +13,7 @@ from typing import (
 import numpy as np
 
 
-class EvaluateUnit(ABCMeta):
+class EvaluateUnit(ABC):
     @property
     @abstractmethod
     def return_type(self):
