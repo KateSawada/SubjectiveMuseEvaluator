@@ -132,4 +132,66 @@ class EmptyBars(EvaluateUnit):
         return {"empty_bars": results}
 
 
+class UsedPitchClasses(EvaluateUnit):
+    def __init__(
+        self,
+        n_samples: int,
+        songs_per_sample: int,
+        measures_per_song: int,
+        reshaper: Callable[[np.ndarray], np.ndarray],
+        track_names: List[str],
+    ):
+        """Used pitch classes
+        Args:
+            n_samples (int): count of total samples
+            songs_per_sample (int): songs per sample
+            reshaper (Callable[[np.ndarray], np.ndarray]): reshape function.
+                it convert pianoroll shape into (song, track, timestep, pitch)
+            track_names (List[str]): list of track name
+        """
+        self.results = np.zeros((n_samples, len(track_names)))
+        self.songs_per_sample = songs_per_sample
+        self.measures_per_song = measures_per_song
+        self.reshaper =reshaper
+        self.track_names = track_names
+
+    def __call__(self, idx: int, pianoroll: np.ndarray) -> None:
+        """calculate used pitch classes
+
+        Args:
+            idx (int): index of the sample
+            pianoroll (np.ndarray): pianoroll of n songs.
+        """
+        pianoroll = self.reshaper(pianoroll)
+        # (songs, track, timestep, pitch)
+
+        rem = pianoroll.shape[3] % 12
+        # process octave fraction
+        if (rem != 0):
+            reminder = pianoroll[..., -rem:]
+            pianoroll = pianoroll[..., :-rem]
+        pianoroll = np.reshape(
+            pianoroll,
+            (pianoroll.shape[0], pianoroll.shape[1], pianoroll.shape[2], 12, -1)
+        )
+
+        pianoroll_12_pitches = np.sum(pianoroll, axis=4)
+
+        if (rem != 0):
+            pianoroll_12_pitches[..., :rem] += reminder
+        pianoroll_12_pitches = _add_measure_axis(
+            pianoroll_12_pitches, self.measures_per_song)
+
+        pianoroll_12_pitches = np.sum(pianoroll_12_pitches, axis=3)
+        # (song, track, measure, 12)
+        measure_used_pitches = np.count_nonzero(pianoroll_12_pitches, axis=3)
+        # # (song, track, measure)
+        result = np.average(measure_used_pitches, axis=2)
+        self.results[
+            idx * self.songs_per_sample:
+                (idx + 1) * self.songs_per_sample] = result
+
+    def to_dict(self):
+        results = _to_dict_average_over_track(self.track_names, self.results)
+        return {"used_pitch_classes": results}
 # TODO: implement each methods
