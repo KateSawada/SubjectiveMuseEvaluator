@@ -1,2 +1,2 @@
 from .evaluator import *  # NOQA
-from . import units
+from . import units  # NOQA
