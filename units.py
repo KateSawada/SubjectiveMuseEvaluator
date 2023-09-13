@@ -51,6 +51,15 @@ class EvaluateUnit(ABC):
         return
 
 
+def _to_dict_average_over_track(
+    track_names: List[str],
+    results: np.ndarray,
+) -> Dict[str, float]:
+    results_dict = {}
+    for i in range(len(track_names)):
+        results_dict[track_names[i]] = np.average(results[:, i]).item()
+    return results_dict
+
 class EmptyBars(EvaluateUnit):
     def __init__(
         self,
@@ -87,9 +96,7 @@ class EmptyBars(EvaluateUnit):
                 (idx + 1) * self.n_pianoroll_per_samples] = result
 
     def to_dict(self):
-        results = {}
-        for i in range(len(self.track_names)):
-            results[self.track_names[i]] = np.average(self.results[:, i]).item()
+        results = _to_dict_average_over_track(self.track_names, self.results)
         return {"empty_bars": results}
 
 
