@@ -1,4 +1,5 @@
 samples_root_dir: "path/to/samples_dir"
+output_file: "path/to/result.yaml"
 samples_extension: "pt"  # "pt", "npy"
 songs_per_sample: 4
 measures_per_song: 4
