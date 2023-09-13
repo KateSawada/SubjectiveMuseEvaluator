@@ -198,7 +198,8 @@ class UsedPitchClasses(EvaluateUnit):
 
 def _drum_pattern_mask(n_timesteps: int, tolerance=0.1):
     """Return a drum pattern mask with the given tolerance.
-        code from https://github.com/salu133445/musegan/blob/main/src/musegan/metrics.py#L77
+    code from
+    https://github.com/salu133445/musegan/blob/main/src/musegan/metrics.py#L77
 
     Args:
         n_timesteps (int): number of timesteps in measure
@@ -209,7 +210,7 @@ def _drum_pattern_mask(n_timesteps: int, tolerance=0.1):
     """
     if n_timesteps not in (96, 48, 24, 72, 36, 64, 32, 16):
         raise ValueError("Unsupported number of timesteps for the drum in "
-                            "pattern metric.")
+                         "pattern metric.")
     if n_timesteps == 96:
         drum_pattern_mask = np.tile(
             [1., tolerance, 0., 0., 0., tolerance], 16)
