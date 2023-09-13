@@ -1,0 +1,17 @@
+samples_root_dir: "path/to/samples_dir"
+samples_extension: "pt"  # "pt", "npy"
+songs_per_sample: 4
+measures_per_song: 4
+timesteps_per_measure: 48
+n_pitches: 88
+hard_threshold: 0.5
+track_names:
+- drum
+- piano
+- guitar
+- bass
+- strings
+drum_track_index: -1  # negative value means samples do not contain drum track
+
+defaults:
+    evaluation_loader: ndarray_from_pt

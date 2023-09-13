@@ -1,0 +1,2 @@
+# this class load npy file that contains one sample
+name: NDarrayFromNpy
