@@ -60,6 +60,7 @@ class DrumReshaper(Reshaper):
             timesteps_per_measure (int): timesteps per measure
             n_pitches (int): number of pitches
             hard_threshold (float, optional): threshold. default is 0.5
+            drum_index (int): index of drum tracks
         """
         super().__init__(*args, **kwargs)
         self.drum_index = drum_index
