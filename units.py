@@ -76,12 +76,12 @@ def _add_measure_axis(
 
     Returns:
         np.ndarray: reshaped pianoroll.
-            shape: (songs, measure, timestep, pitch)
+            shape: (songs, track, measure, timestep, pitch)
     """
     return np.reshape(
         pianoroll,
         (pianoroll.shape[0], pianoroll.shape[1],
-         -1, measures_per_song, pianoroll.shape[3])
+         measures_per_song, -1, pianoroll.shape[3])
     )
 
 
