@@ -66,4 +66,4 @@ class DrumReshaper(Reshaper):
         self.drum_index = drum_index
 
     def __call__(self, pianoroll: np.ndarray):
-        return super.__call__(pianoroll)[:, 0, :, :]
+        return super().__call__(pianoroll)[:, self.drum_index, :, :]
