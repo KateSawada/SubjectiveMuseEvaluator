@@ -118,6 +118,7 @@ class EmptyBars(EvaluateUnit):
         pianoroll = self.reshaper(pianoroll)
         pianoroll = _add_measure_axis(pianoroll, self.measures_per_song)
         # (songs, track, measure, timestep, pitch)
+        print(f"after reshape: {pianoroll.shape=}")
 
         result = np.average(
             np.all(pianoroll == 0, axis=(3, 4)).astype(np.float32),

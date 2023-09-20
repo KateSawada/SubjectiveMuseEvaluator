@@ -1,16 +1,17 @@
 from typing import List, Callable
+from pprint import pprint
 
 import numpy as np
 from omegaconf import OmegaConf
 from tqdm import tqdm
 
-from .units import EvaluateUnit
+from .metrics.base import MetricsBase
 
 
 class Evaluator:
     def __init__(
             self,
-            methods: List[EvaluateUnit],
+            methods: List[MetricsBase],
             filenames: List[str],
             loader: Callable[[str], np.ndarray],
     ):
@@ -33,13 +34,13 @@ class Evaluator:
                 sample = self.loader(self.filenames[idx_samples])
                 method(idx_samples, sample)
             # execute method
-            for idx_methods in range(len(self.methods)):
-                tuple(map(_run_method, self.methods))
+            tuple(map(_run_method, self.methods))
 
         # merge all results
         results = {}
         for idx_methods in range(len(self.methods)):
-            results = dict(results, **self.methods[idx_methods].to_dict())
+            results = dict(
+                results, **self.methods[idx_methods].to_dict())
         results = OmegaConf.create(results)
-        print(results)
+        pprint(results)
         OmegaConf.save(results, output_file)

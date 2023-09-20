@@ -4,6 +4,7 @@ samples_extension: "pt"  # "pt", "npy"
 songs_per_sample: 4
 measures_per_song: 4
 timesteps_per_measure: 48
+beat_per_measure: 4
 n_pitches: 88
 hard_threshold: 0.5
 track_names:
@@ -12,7 +13,48 @@ track_names:
 - guitar
 - bass
 - strings
-drum_track_index: -1  # negative value means samples do not contain drum track
+
+metrics:
+    - drum_pattern:
+        name: DrumPattern
+        args:
+            n_samples: ${n_samples}
+            songs_persample: ${songs_persample}
+            measures_per_song: ${measures_per_song}
+            reshaper: ${reshaper}
+            track_names: ${track_names}
+            postprocess: ${postprocess}
+            target_track_index: 0
+            timestep_per_measure: ${timestep_per_measure}
+    - empty_bar_rate:
+        name: EmptyBarRate:
+        args:
+            n_samples: ${n_samples}
+            songs_persample: ${songs_persample}
+            measures_per_song: ${measures_per_song}
+            reshaper: ${reshaper}
+            track_names: ${track_names}
+            postprocess: ${postprocess}
+    - used_pitch_classes:
+        name: UsedPitchClasses
+        args:
+            n_samples: ${n_samples}
+            songs_persample: ${songs_persample}
+            measures_per_song: ${measures_per_song}
+            reshaper: ${reshaper}
+            track_names: ${track_names}
+            postprocess: ${postprocess}
+    - tonal_distance:
+        name: TonalDistance
+        args:
+            n_samples: ${n_samples}
+            songs_persample: ${songs_persample}
+            measures_per_song: ${measures_per_song}
+            reshaper: ${reshaper}
+            track_names: ${track_names}
+            postprocess: ${postprocess}
+            timesteps_per_measure: ${timesteps_per_measure}
+            beat_per_measure: ${beat_per_measure}
 
 defaults:
     - evaluation_loader: ndarray_from_pt
