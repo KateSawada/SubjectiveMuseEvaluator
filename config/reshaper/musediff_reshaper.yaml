@@ -1,0 +1,12 @@
+name: MuseDiffReshaper
+args:
+    used_index:
+        # give track index you want to evaluate
+        - 1
+    input_shape:
+    - ${songs_per_sample}
+    - 1
+    - ${n_tracks}
+    - ${measures_per_song}
+    - ${timesteps_per_measure}
+    - ${n_pitches}

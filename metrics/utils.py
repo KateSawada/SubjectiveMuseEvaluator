@@ -38,7 +38,7 @@ def to_chroma(pianoroll: np.ndarray) -> np.ndarray:
         pianoroll.shape[1],
         pianoroll.shape[2],
         12,
-        pianoroll.shape[3] // 12 + int(remainder > 0),
+        pianoroll.shape[3] // 12,
         pianoroll.shape[4],
     )
     return np.sum(reshaped, axis=4)
