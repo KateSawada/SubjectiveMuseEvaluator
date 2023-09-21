@@ -7,6 +7,8 @@ timesteps_per_measure: 48
 beat_per_measure: 4
 n_pitches: 88
 hard_threshold: 0.5
+
+n_tracks: 5
 track_names:
 - drum
 - piano
@@ -15,48 +17,37 @@ track_names:
 - strings
 
 metrics:
-    - drum_pattern:
+    drum_pattern:
         name: DrumPattern
         args:
-            n_samples: ${n_samples}
-            songs_persample: ${songs_persample}
+            songs_per_sample: ${songs_per_sample}
             measures_per_song: ${measures_per_song}
-            reshaper: ${reshaper}
             track_names: ${track_names}
-            postprocess: ${postprocess}
             target_track_index: 0
-            timestep_per_measure: ${timestep_per_measure}
-    - empty_bar_rate:
-        name: EmptyBarRate:
+            timesteps_per_measure: ${timesteps_per_measure}
+    empty_bar_rate:
+        name: EmptyBarRate
         args:
-            n_samples: ${n_samples}
-            songs_persample: ${songs_persample}
+            songs_per_sample: ${songs_per_sample}
             measures_per_song: ${measures_per_song}
-            reshaper: ${reshaper}
             track_names: ${track_names}
-            postprocess: ${postprocess}
-    - used_pitch_classes:
+    used_pitch_classes:
         name: UsedPitchClasses
         args:
-            n_samples: ${n_samples}
-            songs_persample: ${songs_persample}
+            songs_per_sample: ${songs_per_sample}
             measures_per_song: ${measures_per_song}
-            reshaper: ${reshaper}
             track_names: ${track_names}
-            postprocess: ${postprocess}
-    - tonal_distance:
+    tonal_distance:
         name: TonalDistance
         args:
-            n_samples: ${n_samples}
-            songs_persample: ${songs_persample}
+            songs_per_sample: ${songs_per_sample}
             measures_per_song: ${measures_per_song}
-            reshaper: ${reshaper}
             track_names: ${track_names}
-            postprocess: ${postprocess}
             timesteps_per_measure: ${timesteps_per_measure}
             beat_per_measure: ${beat_per_measure}
 
 defaults:
     - evaluation_loader: ndarray_from_pt
-    - reshaper: reshaper
-    - drum_reshaper: drum_reshaper
+    - reshaper: musediff_reshaper
+    - stats: calculate_track_statistics
+

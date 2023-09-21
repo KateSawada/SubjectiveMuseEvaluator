@@ -22,7 +22,7 @@ class DrumPattern(MetricsBase):
         track_names: List[str],
         postprocess: StatsBase,
         target_track_index: int,
-        timestep_per_measure: int,
+        timesteps_per_measure: int,
     ):
         """Drum pattern metrics
 
@@ -35,7 +35,7 @@ class DrumPattern(MetricsBase):
             postprocess (StatsBase): converter that convert self.results into
                 dict[track_name: value]
             target_track_index (int): track index used in this metrics
-            timestep_per_measure: (int): timestep per measure
+            timesteps_per_measure: (int): timestep per measure
         """
         self.results = np.zeros(
             (n_samples, songs_per_sample, measures_per_song, 1))
@@ -46,7 +46,7 @@ class DrumPattern(MetricsBase):
         self.postprocess = postprocess
         self.target_track_index = target_track_index
         self.mask = \
-            drum_pattern_mask(timestep_per_measure)[np.newaxis, np.newaxis, :]
+            drum_pattern_mask(timesteps_per_measure)[np.newaxis, np.newaxis, :]
 
     def to_dict(self) -> Dict[str, Dict[str, float]]:
         """convert result into dict.

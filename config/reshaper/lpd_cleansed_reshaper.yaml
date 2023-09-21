@@ -1,0 +1,10 @@
+name: LpdCleansedReshaper
+args:
+    used_index:
+        # give track index you want to evaluate
+        - 1
+    input_shape:
+    - ${measures_per_song}
+    - ${timesteps_per_measure}
+    - ${n_pitches}
+    - ${n_tracks}

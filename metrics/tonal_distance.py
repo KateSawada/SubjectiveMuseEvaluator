@@ -21,7 +21,7 @@ class TonalDistance(MetricsBase):
         reshaper: ReshaperBase,
         track_names: List[str],
         postprocess: StatsBase,
-        timestep_per_measure: int,
+        timesteps_per_measure: int,
         beat_per_measure: int,
     ):
         """tonal distance metrics
@@ -34,7 +34,7 @@ class TonalDistance(MetricsBase):
             track_names (List[str]): list of track names
             postprocess (StatsBase): converter that convert self.results into
                 dict[track_name: value]
-            timestep_per_measure (int): timestep per measure
+            timesteps_per_measure (int): timestep per measure
             beat_per_measure (int): beat per measure
         """
         # each measure has 2x2 matrix(n_tracks x n_tracks)
@@ -49,7 +49,7 @@ class TonalDistance(MetricsBase):
         self.reshaper =reshaper
         self.track_names = track_names
         self.postprocess = postprocess
-        self.timestep_per_beat = timestep_per_measure // beat_per_measure
+        self.timesteps_per_beat = timesteps_per_measure // beat_per_measure
 
     def to_dict(self) -> Dict[str, Dict[str, float]]:
         """convert result into dict.
@@ -101,8 +101,9 @@ class TonalDistance(MetricsBase):
         per beat."""
         tonal_matrix = create_tonal_matrix()
         beat_chroma = np.sum(np.reshape(
-            pianoroll, (-1, self.timestep_per_beat, 12, pianoroll.shape[4])), 1)
-        # beat_chroma.shape > (measures, 12, n_tracks)
+            pianoroll,
+            (-1, self.timesteps_per_beat, 12, pianoroll.shape[4])), 1)
+        # >>> beat_chroma.shape  # (measures, 12, n_tracks)
         beat_chroma = beat_chroma / np.sum(beat_chroma, 1, keepdims=True)
         beat_chroma = np.nan_to_num(beat_chroma)  # remove nan
         reshaped = np.reshape(beat_chroma.transpose(1, 0, 2), (12, -1))
