@@ -96,9 +96,18 @@ class TonalDistance(MetricsBase):
 
         self.results[idx] = result
 
-    def to_tonal_space(self, pianoroll: np.ndarray):
+    def to_tonal_space(self, pianoroll: np.ndarray) -> np.ndarray:
         """Return the tensor in tonal space where chroma features are normalized
-        per beat."""
+        per beat.
+
+        Args:
+            pianoroll (np.ndarray): chroma features array.
+                shape=(n_songs, n_measures, timesteps, 12, n_tracks)
+
+        Returns:
+            np.ndarray: tonal vector
+            shape=(6, -1, tracks)
+        """
         tonal_matrix = create_tonal_matrix()
         beat_chroma = np.sum(np.reshape(
             pianoroll,

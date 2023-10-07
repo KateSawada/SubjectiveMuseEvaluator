@@ -51,4 +51,5 @@ class MuseDiffReshaper(ReshaperBase):
                 shape=(n_songs, n_measures, timesteps, n_pitches, n_tracks)
         """
         self.validation_input_shape(pianoroll)
+        pianoroll = pianoroll > self.hard_threshold
         return pianoroll.squeeze(1).transpose(0, 2, 3, 4, 1).copy()
